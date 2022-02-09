@@ -20,7 +20,7 @@ mpDraw = mp.solutions.drawing_utils
 pTime =0
 cTime =0
 fps=10.0
-length =0
+length =20
 while True:
     suc,img = cap.read()
     imgRGB = cv2.cvtColor(img,cv2.COLOR_BGR2RGB)
@@ -39,12 +39,17 @@ while True:
         x2,y2 = lmList[8][1],lmList[8][2]
         cv2.line(img,(x1,y1),(x2,y2),(0,255,0),3)
         length = math.hypot(x2-x1,y2-y1)
-    vol = np.interp(length,[50,200],[minVol,maxVol])
-    volume.SetMasterVolumeLevel(vol,None)
+        vol = np.interp(length,[50,200],[minVol,maxVol])
+        volume.SetMasterVolumeLevel(vol,None)
+    cv2.rectangle(img,(10,150),(50,400),(0,255,0),3)
+    volBar = np.interp(length,[50,200],[400,150])
+    cv2.rectangle(img, (10,int(volBar)),(50,400),(0,255,0),cv2.FILLED)
+    volPer = np.interp(length,[50,200],[0,100])
+    cv2.putText(img,f'{int(volPer)}%',(10,100),cv2.FONT_HERSHEY_COMPLEX,1,(0,255,0),2,cv2.LINE_AA)
     cTime = time.time()
     fps = 1/(cTime-pTime)
     pTime = cTime
-    cv2.putText(img, str(int(fps)),(10,100), cv2.FONT_HERSHEY_COMPLEX, 1, (0,0,255),2,cv2.LINE_AA)
+    cv2.putText(img, str(int(fps)),(10,70), cv2.FONT_HERSHEY_COMPLEX, 1, (0,0,255),2,cv2.LINE_AA)
     cv2.imshow('frame',img)        
     q = cv2.waitKey(1)
     if q ==ord(' ') or q==27:
